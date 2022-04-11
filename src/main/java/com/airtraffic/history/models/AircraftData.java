@@ -181,4 +181,7 @@ public class AircraftData
 		return "\t\t" + callsign + " at " + timestamp + "; Speed: " + velocity + "; Altitude:" + baroAltitude; 
 	}
 	
+	public String toJson() {	
+		//TODO implement
+	}
 }	

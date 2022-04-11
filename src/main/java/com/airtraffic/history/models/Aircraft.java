@@ -2,6 +2,7 @@ package com.airtraffic.history.models;
 
 import java.util.ArrayList;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 //Aircraft class
 //For Future: Maybe get Aircraft Type via a database or API if possible
@@ -83,6 +84,16 @@ public class Aircraft
 		}
 		return consoleString + "\n";
 		
+	}
+	
+	//TODO better naming for the shit in this method
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		
+		json.put("icao24", icao24);
+		json.put("aircraftData", ModelListToJson.aircraftDataListToJson(data)); //aircraftDataListToJson not implemented yet, so this doesn't work lol
+		
+		return json;
 	}
 	
 }

@@ -1,5 +1,7 @@
 package com.airtraffic.history.models;
 
+import org.json.JSONObject;
+
 public class AreaBounds {
 	private double lamin;
 	private double lamax;
@@ -11,6 +13,13 @@ public class AreaBounds {
 		this.lamax = lamax;
 		this.lomin = lomin;
 		this.lomax = lomax;
+	}
+	
+	public AreaBounds(JSONObject bounds) {
+		this.lamin = bounds.getDouble("lamin");
+		this.lamax = bounds.getDouble("lamax");
+		this.lomin = bounds.getDouble("lomin");
+		this.lomax = bounds.getDouble("lomax");
 	}
 	
 	public String toURL() {
