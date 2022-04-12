@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import com.airtraffic.history.GetTraffic;
 import com.airtraffic.history.models.Aircraft;
 import com.airtraffic.history.models.AreaBounds;
+import com.airtraffic.history.models.ModelListToJson;
 
 //REST API for Air Traffic History
 public class AirTrafficHistoryService 
@@ -39,7 +40,9 @@ public class AirTrafficHistoryService
 	 * 
 	 * A further optimization to avoid making unnecessary requests is best explained with an example followed by
 	 * the abstract. Lets say I make a request for time=1234. If I get a response for time=1239, then I shall not make
-	 * another request for that aircraft until time=1240. This avoids unneccessary requests to opensky.
+	 * another request for that aircraft until time=1240. This avoids unneccessary requests to opensky. In the abstract, 
+	 * if I make a request for a certain time and I get a time that is farther in the future, I know then that I will not
+	 * get any new information up to the next interval after that timestamp. This will avoid unneccessary requests.
 	 * 
 	 * A further optimization to offload the work on the backend is by utilizing streams. Instead of collecting
 	 * all of the data and sending it back later, it might be better to send packets of data
@@ -79,8 +82,7 @@ public class AirTrafficHistoryService
 		ArrayList<Aircraft> aircraftList = GetTraffic.getElapsedAreaData(areaBounds, firstTimestamp, json.getInt("interval"), elapsedTime);
 		
 		
-		return null; //Fix Later
-		//return Response.status(201).entity();
+		return Response.status(201).entity(ModelListToJson.aircraftListToJson(aircraftList).toString()).build();
 	}
 
 }

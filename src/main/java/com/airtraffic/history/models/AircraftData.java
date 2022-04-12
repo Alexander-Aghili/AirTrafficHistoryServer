@@ -1,6 +1,7 @@
 package com.airtraffic.history.models;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 //Reference https://openskynetwork.github.io/opensky-api/rest.html for API
 
@@ -18,7 +19,7 @@ public class AircraftData
 	private String callsign; 		//8 char callsign, can be null
 	private String originCountry; 	//Country name inferred from the ICAO 24-bit address
 	private float longitude;		//WGS-84 longitude in decimal degrees
-	private float latitiude;		//WGS-84 latitude in decimal degrees
+	private float latitude;			//WGS-84 latitude in decimal degrees
 	private float baroAltitude;		//Barometric altitude in meters
 	private boolean onGround;		//Boolean value which indicates if the position was retrieved from a surface position report
 	private float velocity;			//Velocity over ground in m/s
@@ -48,7 +49,7 @@ public class AircraftData
 		this.originCountry 		= json.getString(2);
 		this.timestamp			= json.getInt(3);
 		this.longitude 			= json.getFloat(5);
-		this.latitiude 			= json.getFloat(6);
+		this.latitude 			= json.getFloat(6);
 		this.baroAltitude 		= json.getFloat(7);
 		this.onGround 			= json.getBoolean(8);
 		this.velocity 			= json.getFloat(9);
@@ -97,13 +98,13 @@ public class AircraftData
 	}
 
 
-	public float getLatitiude() {
-		return latitiude;
+	public float getLatitude() {
+		return latitude;
 	}
 
 
-	public void setLatitiude(float latitiude) {
-		this.latitiude = latitiude;
+	public void setLatitude(float latitiude) {
+		this.latitude = latitiude;
 	}
 
 
@@ -181,7 +182,42 @@ public class AircraftData
 		return "\t\t" + callsign + " at " + timestamp + "; Speed: " + velocity + "; Altitude:" + baroAltitude; 
 	}
 	
-	public String toJson() {	
-		//TODO implement
+	//TODO decide if toJson needs to happen or if toJsonArray will work (Based on if REST API can send array back in order)
+	
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		
+		json.put("timestamp", this.timestamp);
+		json.put("callsign", this.callsign);
+		json.put("longtitude", this.longitude);
+		json.put("latitude", this.latitude);
+		json.put("baroAlt", this.baroAltitude);
+		json.put("onGround", this.onGround);
+		json.put("velocity", this.velocity);
+		json.put("trueTrack", this.trueTrack);
+		json.put("verticalRate", this.verticalRate);
+		json.put("geoAlt", this.geoAltitude);
+		json.put("Squawk", this.squawk);
+		
+		return json;
+	}
+	
+	
+	public JSONArray toJsonArray() {
+		JSONArray json = new JSONArray();
+		
+		json.put(timestamp);
+		json.put(callsign);
+		json.put(longitude);
+		json.put(latitude);
+		json.put(baroAltitude);
+		json.put(onGround);
+		json.put(velocity);
+		json.put(trueTrack);
+		json.put(verticalRate);
+		json.put(geoAltitude);
+		json.put(squawk);
+		
+		return json;
 	}
 }	

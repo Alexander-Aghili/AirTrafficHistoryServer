@@ -91,7 +91,7 @@ public class Aircraft
 		JSONObject json = new JSONObject();
 		
 		json.put("icao24", icao24);
-		json.put("aircraftData", ModelListToJson.aircraftDataListToJson(data)); //aircraftDataListToJson not implemented yet, so this doesn't work lol
+		json.put("aircraftData", ModelListToJson.aircraftDataListToJson(data));
 		
 		return json;
 	}

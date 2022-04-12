@@ -12,10 +12,10 @@ TODO is formatted as follows: (File, Method(*), Comment, Notes/Summarization**)
 TODO:
  1. GetTraffic, getElapsedAreaData(), Catch error, Catch error for errors relating to Opensky response for both this method and the AircraftElapsedData method above
  2. AirTrafficHistoryService, getHistory(), Finish, 
- 3. Aircraft, toJson(), better naming for the shit in this method,
+ 3. Aircraft, toJson(), better naming for the shit in this method, Do this for other json methods as well
  4. ModelListToJson, aircraftListToJson(), implement,
  5. ModelListToJson, aircraftDataListToJson(), implement,
- 6. AircraftData, toJson(), implement,
+ 6. AircraftData, toJson(), decide if toJson needs to happen or if toJsonArray will work (Based on if REST API can send array back in order),
 
  
  

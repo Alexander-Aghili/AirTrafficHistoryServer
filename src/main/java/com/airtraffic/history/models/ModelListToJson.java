@@ -20,10 +20,23 @@ public class ModelListToJson
 {
 	
 	public static JSONArray aircraftListToJson(ArrayList<Aircraft> aircraftList) {
-		//TODO implement
+		JSONArray aircraftJson = new JSONArray();
+		
+		for (Aircraft aircraft : aircraftList) {
+			aircraftJson.put(aircraft.toJson());
+		}
+		
+		return aircraftJson;
+		
 	}
 	
 	public static JSONArray aircraftDataListToJson(ArrayList<AircraftData> aircraftDataList) {
-		//TODO implement
+		JSONArray aircraftDataJson = new JSONArray();
+		
+		for (AircraftData aircraftData : aircraftDataList) {
+			aircraftDataJson.put(aircraftData.toJsonArray());
+		}
+		
+		return aircraftDataJson;
 	}
 }
