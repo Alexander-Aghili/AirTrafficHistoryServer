@@ -64,8 +64,8 @@ public class AirTrafficHistoryService
 	
 	/*
 	 * JSON with Area Bounds and first timestamp, interval , last timestamp (if 0, that is now)
-	 * {bounds: {lamin:double,lamax:double,lomin:double,lomax:double},
-	 *  firstTimestamp: int, lastTimestamp: int, interval: int} 
+	 * {"bounds": {"lamin":double,"lamax":double,"lomin":double,"lomax":double},
+	 *  "firstTimestamp: int, "lastTimestamp": int, "interval": int} 
 	 */
 	//TODO Finish
 	@Path("/GetHistory")
@@ -75,8 +75,6 @@ public class AirTrafficHistoryService
 	public Response getHistory(String jsonString) {
 		JSONObject json = new JSONObject(jsonString);
 		
-		System.out.println(json);
-		System.out.println(json.getDouble("firstTimestamp") - Instant.now().getEpochSecond());
 		if (json.getDouble("firstTimestamp") < Instant.now().getEpochSecond()-3600)
 			return Response.status(400).entity("More than 1 Hour Old Request").build();
 		

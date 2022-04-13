@@ -47,7 +47,6 @@ public class GetTraffic
 		//For loop that increments by interval
 		for (int i = 0; i < elapsedTime; i += interval) {
 			String requestURL = baseURL + "&time=" + (firstTimestamp + i);
-							
 			//Makes the request and turns it into JSON
 			//This may cause errors if the response isn't 200 or isn't JSON which can happen and isn't checked right now
 			JSONObject response = new JSONObject(makeRequest(requestURL)); 
@@ -73,10 +72,15 @@ public class GetTraffic
 		
 		String baseURL = HOST_URL + "/states/all?" + area.toURL();
 		
+		long prevTime = System.currentTimeMillis();
+		long average = 0;
 		//O(n^2) which is very bad for large or dense areas :(
 		for (int i = 0; i < elapsedTime; i+= interval) {
-			String requestURL = baseURL + "&time=" + (firstTimestamp + i);
-			//System.out.println("Request: " + requestURL);
+			long time = System.currentTimeMillis()-prevTime;
+			prevTime = System.currentTimeMillis();
+			System.out.println(time);
+			
+			String requestURL = baseURL + "&time=" + (firstTimestamp + i);			
 			
 			//Possible error if response body isn't JSON, not caught right now
 			//TODO Catch error
