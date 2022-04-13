@@ -30,7 +30,7 @@ public class ModelListToJson
 		
 	}
 	
-	public static JSONArray aircraftDataListToJson(ArrayList<AircraftData> aircraftDataList) {
+	public static JSONArray aircraftDataListToJson(ArrayList<AircraftData> aircraftDataList) { 
 		JSONArray aircraftDataJson = new JSONArray();
 		
 		for (AircraftData aircraftData : aircraftDataList) {

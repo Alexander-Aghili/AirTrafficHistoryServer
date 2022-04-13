@@ -3,8 +3,12 @@ package com.rest.airtraffic;
 import java.time.Instant;
 import java.util.ArrayList;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.json.JSONObject;
@@ -15,6 +19,7 @@ import com.airtraffic.history.models.AreaBounds;
 import com.airtraffic.history.models.ModelListToJson;
 
 //REST API for Air Traffic History
+@Path("history")
 public class AirTrafficHistoryService 
 {
 	
@@ -65,9 +70,14 @@ public class AirTrafficHistoryService
 	//TODO Finish
 	@Path("/GetHistory")
 	@POST	
-	public Response getHistory(JSONObject json) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getHistory(String jsonString) {
+		JSONObject json = new JSONObject(jsonString);
 		
-		if (json.getDouble("firstTimestamp") < Instant.now().toEpochMilli()-3600)
+		System.out.println(json);
+		System.out.println(json.getDouble("firstTimestamp") - Instant.now().getEpochSecond());
+		if (json.getDouble("firstTimestamp") < Instant.now().getEpochSecond()-3600)
 			return Response.status(400).entity("More than 1 Hour Old Request").build();
 		
 		AreaBounds areaBounds = new AreaBounds(json.getJSONObject("bounds"));
@@ -75,7 +85,7 @@ public class AirTrafficHistoryService
 		
 		int elapsedTime;
 		if (json.getInt("lastTimestamp") == 0) 
-			elapsedTime = (int) Instant.now().toEpochMilli() - firstTimestamp;
+			elapsedTime = (int) Instant.now().getEpochSecond() - firstTimestamp;
 		else
 			elapsedTime = json.getInt("lastTimestamp") - firstTimestamp; 
 		
@@ -84,5 +94,4 @@ public class AirTrafficHistoryService
 		
 		return Response.status(201).entity(ModelListToJson.aircraftListToJson(aircraftList).toString()).build();
 	}
-
 }
