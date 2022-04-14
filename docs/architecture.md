@@ -29,15 +29,21 @@ Same format as above: {least conservative, sample mean, most conservative} in ms
 
 For 30 min with 5 second:
 360 requests to Opensky
-{212504,231620,250740}, {212.504,231.62,250.74}, and {3.54, 3.86, 4.18}
+{212504, 231620, 250740}, {212.504, 231.62, 250.74}, and {3.54, 3.86, 4.18}
 Ouch. This could mean more than 4 minutes to process a request of 30 minutes.
 
 For 1 hour with 1 second requets:
 3600 requests
-{2125044,2316204,2507400}, {2125.044,2316.204,2507.4}, and {35.42,38.6,41.79}
+{2125044, 2316204, 2507400}, {2125.044, 2316.204, 2507.4}, and {35.42, 38.6, 41.79}
 
 As you can see, this is really bad. Even with a stream you couldn't run a timelapse of more than like 1.4x(Rough estimate) and definitely not 2x. Needing almost 42 minutes for a single person to generate a timelapse (which occupies a whole thread on my backend). As you can see this doesn't scale at all. In like any meaningful manner or capacity. 
 
 All of this doesn't account for the density of the traffic, since my sample used the same density of traffic, area, or other factors. As you can see this is quite the disaster so I will have to come up with some work arounds and solutions. Right now nothing much comes to mind other than possibly building a stream with the front end but as mentioned that just mihgt not work either.
 
 I am not quite sure how I will solve this but Ill figure it out hopefully.
+
+4/12/21
+I came up with a possible solution. I find it likely I will have to implement several fixes simultaneously to make this operational. I also think in the long term my own storage will be more effective for timing and just update my db every second in real time, but that is for the future.
+
+For now, I believe that most effetive method of reducing requests is using 3D linear interpolation. I will take two points/AircraftData objects. Then I will extract new points/AircraftData objects based on the current points. This will include locations based on speed(and change in speed) and altitude based on vertical rate(and change in vertical rate). This could cause issues with regard to turns, which I will have to work out. I will collect data based on how accurate the interpolation is for the different metrics and base how long the interpolation should be to reduce requests. 
+
