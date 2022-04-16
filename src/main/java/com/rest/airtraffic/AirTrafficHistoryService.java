@@ -70,7 +70,7 @@ public class AirTrafficHistoryService
 	// {"bounds": {"lamin":37,"lamax":38.5,"lomin":-121,"lomax":123},"firstTimestamp": 1649829860, "lastTimestamp": 0, "interval": 10}
 	//TODO Finish
 	@Path("/GetHistory")
-	@POST	
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHistory(String jsonString) {

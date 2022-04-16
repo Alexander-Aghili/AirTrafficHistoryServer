@@ -47,3 +47,5 @@ I came up with a possible solution. I find it likely I will have to implement se
 
 For now, I believe that most effetive method of reducing requests is using 3D linear interpolation. I will take two points/AircraftData objects. Then I will extract new points/AircraftData objects based on the current points. This will include locations based on speed(and change in speed) and altitude based on vertical rate(and change in vertical rate). This could cause issues with regard to turns, which I will have to work out. I will collect data based on how accurate the interpolation is for the different metrics and base how long the interpolation should be to reduce requests. 
 
+My dad also suggested making simultaneous requests which might actually work if the library I have offers the ability to perform multiple HTTP requests simultaneously. This will ensure that each request doesn't have to wait for the data to come in and really just be better so I will look into that.
+

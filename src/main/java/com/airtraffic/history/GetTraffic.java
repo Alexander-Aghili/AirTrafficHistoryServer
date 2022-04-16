@@ -3,14 +3,21 @@ package com.airtraffic.history;
 import java.io.IOException;
 import java.time.Instant;
 
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
+import org.apache.tomcat.jni.Time;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.airtraffic.history.models.Aircraft;
@@ -20,15 +27,23 @@ import com.airtraffic.history.models.AreaBounds;
 
 //Testing ONLY
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 
 public class GetTraffic 
 {
 	//For testing ONLY, do not use in production
 	private static Scanner input = new Scanner(System.in);
+	private static int numCompleted;
+	
+	//TODO Configure HTTP Client
+	private static OkHttpClient client = 
+			new OkHttpClient()
+			.newBuilder()
+			.readTimeout(30, TimeUnit.SECONDS)
+			.build();
 	
 	
-	private static OkHttpClient client = new OkHttpClient();
 	private static final String HOST_URL = "https://opensky-network.org/api";
 	private static final String OPENSKY_API_PASSWORD = System.getenv("OPENSKY_API_PASSWORD");
 	
@@ -72,35 +87,35 @@ public class GetTraffic
 		
 		String baseURL = HOST_URL + "/states/all?" + area.toURL();
 		
-		long prevTime = System.currentTimeMillis();
-		long average = 0;
 		//O(n^2) which is very bad for large or dense areas :(
 		for (int i = 0; i < elapsedTime; i+= interval) {
-			long time = System.currentTimeMillis()-prevTime;
-			prevTime = System.currentTimeMillis();
-			System.out.println(time);
-			
 			String requestURL = baseURL + "&time=" + (firstTimestamp + i);			
 			
 			//Possible error if response body isn't JSON, not caught right now
 			//TODO Catch error
 			JSONObject response = new JSONObject(makeRequest(requestURL));
 			
-			JSONArray listOfStates = (JSONArray) response.getJSONArray("states");
-			
-			for (int j = 0; j < listOfStates.length(); j++) {
-				JSONArray aircraftJson = listOfStates.getJSONArray(j);
-				String icao24 = aircraftJson.getString(0).trim();
+			//TODO Catch error if no states returned
+			//This terrible try catch hopefully is temporary
+			try {
+				JSONArray listOfStates = (JSONArray) response.getJSONArray("states");
 				
-				try {
+				for (int j = 0; j < listOfStates.length(); j++) {
+					JSONArray aircraftJson = listOfStates.getJSONArray(j);
+					String icao24 = aircraftJson.getString(0).trim();
+					
+					try {
 
-					Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
-					aircraft.addAircraftData(new AircraftData(aircraftJson));
-				} catch (RuntimeException e) {
-					//This exception occurs when the aircraft doesn't exist. 
-					//This means we must create an aircraft and add it to the list.
-					aircraftList.add(new Aircraft(icao24, new AircraftData(aircraftJson)));
-				}	
+						Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
+						aircraft.addAircraftData(new AircraftData(aircraftJson));
+					} catch (RuntimeException e) {
+						//This exception occurs when the aircraft doesn't exist. 
+						//This means we must create an aircraft and add it to the list.
+						aircraftList.add(new Aircraft(icao24, new AircraftData(aircraftJson)));
+					}	
+				}
+			} catch (JSONException e) {
+				continue;
 			}
 		}
 		
@@ -135,4 +150,117 @@ public class GetTraffic
 		
 		return null;
 	}
+	
+	
+	
+	//HOLY SHIT THE CODE BELOW WORKS(eh not rly see notes) BUT IT IS ABSOLUTELY TERRIBLE DO NOT USE FIX IT FIRST
+	
+	/*
+	 * Testing Async Callbacks to decrease waiting time on requests
+	 */
+	
+	public static ArrayList<Aircraft> getElapsedAreaDataAsyncIO(AreaBounds area, int firstTimestamp, int interval, int elapsedTime) {
+		if ((Instant.now().getEpochSecond() - firstTimestamp) > 3600) return null;
+		numCompleted = 0;
+		
+		ArrayList<Aircraft> aircraftList = new ArrayList<Aircraft>();
+		String baseURL = HOST_URL + "/states/all?" + area.toURL();
+		for (int i = 0; i < elapsedTime; i+= interval) {
+			String requestURL = baseURL + "&time=" + (firstTimestamp + i);			
+			makeRequestAsync(requestURL, aircraftList, i);
+		}
+		while (getNumCompleted() != (int) (elapsedTime/interval)) {
+			
+		}
+		
+		numCompleted = 0;
+		return aircraftList;
+		
+	}
+	
+	//Daisy chaining?
+	private static void makeRequestAsync(String url, ArrayList<Aircraft> aircraftList, int i) {
+		String credential = Credentials.basic("Alexsky2", OPENSKY_API_PASSWORD);
+		Request request = new Request.Builder()
+				  .header("Authorization", credential)
+			      .url(url)
+			      .build();
+
+		client.newCall(request).enqueue(new Callback() {
+
+			@Override
+			public void onFailure(Call call, IOException e) {
+				System.out.println("Failure");
+				e.printStackTrace();
+				System.exit(0);
+			}
+
+			@Override
+			public void onResponse(Call call, Response response) throws IOException {
+				if (response.code() != 200) {
+					System.out.println(response.code());
+					System.out.println(response.body().string());
+					System.out.println("Failure");
+					System.exit(0);
+				}
+				addAircraftToListAsync(new JSONObject(response.body().string()), aircraftList);
+				incNumCompleted();
+				System.out.println("Completed: " + i);
+			}
+			
+		});
+		
+		
+	}
+	
+	private static void addAircraftToListAsync(JSONObject json, ArrayList<Aircraft> aircraftList) {
+		JSONArray listOfStates = (JSONArray) json.getJSONArray("states");
+		
+		for (int j = 0; j < listOfStates.length(); j++) {
+			JSONArray aircraftJson = listOfStates.getJSONArray(j);
+			String icao24 = aircraftJson.getString(0).trim();
+			
+			try {
+
+				Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
+				aircraft.addAircraftData(new AircraftData(aircraftJson));
+			} catch (RuntimeException e) {
+				//This exception occurs when the aircraft doesn't exist. 
+				//This means we must create an aircraft and add it to the list.
+				aircraftList.add(new Aircraft(icao24, new AircraftData(aircraftJson)));
+			}	
+		}
+
+	}
+	
+	private static void incNumCompleted() { numCompleted++; }
+	
+	private static int getNumCompleted() { return numCompleted; }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
