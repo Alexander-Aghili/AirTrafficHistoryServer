@@ -12,10 +12,11 @@ public class Test {
 	private static AreaBounds area;
 	
 	public static void main(String[] args) {
-		area = new AreaBounds(41.948265, 42.003904, -87.942113, -87.868632);
+		area = new AreaBounds(37, 38.5, -123, -121.5);
 		
 		//testTimeDifferenceOfLargerDensityRequests();
-		makeRequestAndDisplayTimeAsync(30);
+		//makeRequestAndDisplayTime(100);
+		makeRequestAndDisplayTimeAsync(100);
 	}
 
 	

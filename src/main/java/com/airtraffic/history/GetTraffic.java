@@ -35,6 +35,7 @@ public class GetTraffic
 	//For testing ONLY, do not use in production
 	private static Scanner input = new Scanner(System.in);
 	private static int numCompleted;
+	private static boolean wait;
 	
 	//TODO Configure HTTP Client
 	private static OkHttpClient client = 
@@ -115,6 +116,7 @@ public class GetTraffic
 					}	
 				}
 			} catch (JSONException e) {
+				System.out.println(response);
 				continue;
 			}
 		}
@@ -150,11 +152,7 @@ public class GetTraffic
 		
 		return null;
 	}
-	
-	
-	
-	//HOLY SHIT THE CODE BELOW WORKS(eh not rly see notes) BUT IT IS ABSOLUTELY TERRIBLE DO NOT USE FIX IT FIRST
-	
+		
 	/*
 	 * Testing Async Callbacks to decrease waiting time on requests
 	 */
@@ -166,13 +164,25 @@ public class GetTraffic
 		ArrayList<Aircraft> aircraftList = new ArrayList<Aircraft>();
 		String baseURL = HOST_URL + "/states/all?" + area.toURL();
 		for (int i = 0; i < elapsedTime; i+= interval) {
-			String requestURL = baseURL + "&time=" + (firstTimestamp + i);			
+			String requestURL = baseURL + "&time=" + (firstTimestamp + i);	
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} // wait 5 ms for each request
 			makeRequestAsync(requestURL, aircraftList, i);
 		}
-		while (getNumCompleted() != (int) (elapsedTime/interval)) {
-			
-		}
 		
+		//This might not work in all circumstances so replace later
+		while (getNumCompleted() != (int) (elapsedTime/interval)) {
+			try {
+				Thread.sleep(5); // must have some sort of code in here to work for some reason
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		numCompleted = 0;
 		return aircraftList;
 		
@@ -185,7 +195,14 @@ public class GetTraffic
 				  .header("Authorization", credential)
 			      .url(url)
 			      .build();
-
+		
+		if (getWait()) {try {
+			Thread.sleep(500);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}} 
+		
 		client.newCall(request).enqueue(new Callback() {
 
 			@Override
@@ -197,21 +214,24 @@ public class GetTraffic
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
-				if (response.code() != 200) {
-					System.out.println(response.code());
-					System.out.println(response.body().string());
-					System.out.println("Failure");
-					System.exit(0);
-				}
+				if (response.code() == 503) {setWait();}
+				
 				addAircraftToListAsync(new JSONObject(response.body().string()), aircraftList);
 				incNumCompleted();
 				System.out.println("Completed: " + i);
 			}
 			
-		});
-		
+		});	
 		
 	}
+	
+	private static boolean getWait() { if (wait) return true; else return false;}
+	private static void setWait() { wait = true; try {
+		Thread.sleep(1000);
+	} catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} wait = false;}
 	
 	private static void addAircraftToListAsync(JSONObject json, ArrayList<Aircraft> aircraftList) {
 		JSONArray listOfStates = (JSONArray) json.getJSONArray("states");
