@@ -35,7 +35,6 @@ public class GetTraffic
 	//For testing ONLY, do not use in production
 	private static Scanner input = new Scanner(System.in);
 	private static int numCompleted;
-	private static boolean wait;
 	
 	//TODO Configure HTTP Client
 	private static OkHttpClient client = 
@@ -153,8 +152,29 @@ public class GetTraffic
 		return null;
 	}
 		
+	
+	
+	
+	
+	
+	
+	/*
+	 * So I have come up with an idea. First I need to refactor this code so that people can read it. 
+	 * Right now even a genius would be confused by the garbage below. 
+	 * With regard to the idea, basically the server and client are going to work using HTTP Live Streaming.
+	 * Basically the client will send requests for data in increments and then the server will serve that information.
+	 * The server will send 10 simulateous requests for data and return the data in working order.
+	 * 
+	 */
+	
+	
+	
 	/*
 	 * Testing Async Callbacks to decrease waiting time on requests
+	 * This is garbage code written garbagely but it is a good start to getting async as optimized as possible.
+	 * Over the next few days I won't likely get much done but I will refactor the current code,
+	 * making it look better, more readable, document applicable sections (even in testing and write one pagers about decisions),
+	 * and write about further thoughts.
 	 */
 	
 	public static ArrayList<Aircraft> getElapsedAreaDataAsyncIO(AreaBounds area, int firstTimestamp, int interval, int elapsedTime) {
@@ -164,13 +184,7 @@ public class GetTraffic
 		ArrayList<Aircraft> aircraftList = new ArrayList<Aircraft>();
 		String baseURL = HOST_URL + "/states/all?" + area.toURL();
 		for (int i = 0; i < elapsedTime; i+= interval) {
-			String requestURL = baseURL + "&time=" + (firstTimestamp + i);	
-			try {
-				Thread.sleep(250);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} // wait 5 ms for each request
+			String requestURL = baseURL + "&time=" + (firstTimestamp + i);
 			makeRequestAsync(requestURL, aircraftList, i);
 		}
 		
@@ -179,7 +193,6 @@ public class GetTraffic
 			try {
 				Thread.sleep(5); // must have some sort of code in here to work for some reason
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -188,20 +201,12 @@ public class GetTraffic
 		
 	}
 	
-	//Daisy chaining?
 	private static void makeRequestAsync(String url, ArrayList<Aircraft> aircraftList, int i) {
 		String credential = Credentials.basic("Alexsky2", OPENSKY_API_PASSWORD);
 		Request request = new Request.Builder()
 				  .header("Authorization", credential)
 			      .url(url)
 			      .build();
-		
-		if (getWait()) {try {
-			Thread.sleep(500);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}} 
 		
 		client.newCall(request).enqueue(new Callback() {
 
@@ -214,24 +219,12 @@ public class GetTraffic
 
 			@Override
 			public void onResponse(Call call, Response response) throws IOException {
-				if (response.code() == 503) {setWait();}
-				
 				addAircraftToListAsync(new JSONObject(response.body().string()), aircraftList);
 				incNumCompleted();
-				System.out.println("Completed: " + i);
 			}
 			
-		});	
-		
+		});
 	}
-	
-	private static boolean getWait() { if (wait) return true; else return false;}
-	private static void setWait() { wait = true; try {
-		Thread.sleep(1000);
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} wait = false;}
 	
 	private static void addAircraftToListAsync(JSONObject json, ArrayList<Aircraft> aircraftList) {
 		JSONArray listOfStates = (JSONArray) json.getJSONArray("states");
@@ -241,7 +234,6 @@ public class GetTraffic
 			String icao24 = aircraftJson.getString(0).trim();
 			
 			try {
-
 				Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
 				aircraft.addAircraftData(new AircraftData(aircraftJson));
 			} catch (RuntimeException e) {

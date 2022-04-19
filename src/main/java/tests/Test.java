@@ -11,12 +11,16 @@ public class Test {
 
 	private static AreaBounds area;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		area = new AreaBounds(37, 38.5, -123, -121.5);
 		
 		//testTimeDifferenceOfLargerDensityRequests();
 		//makeRequestAndDisplayTime(100);
-		makeRequestAndDisplayTimeAsync(100);
+		for (int i = 0; i < 10; i++)  {
+			Thread.sleep(2500);
+			makeRequestAndDisplayTimeAsync(10);	
+		}
+		System.exit(0);
 	}
 
 	
@@ -45,7 +49,7 @@ public class Test {
 		ArrayList<Aircraft> aircraftList=GetTraffic.getElapsedAreaDataAsyncIO(area, firstTimestamp, 1, seconds);
 		System.out.println(aircraftList.size());
 		System.out.println(System.currentTimeMillis() - time);
-		System.exit(0);
+		//System.exit(0);
 
 	}
 

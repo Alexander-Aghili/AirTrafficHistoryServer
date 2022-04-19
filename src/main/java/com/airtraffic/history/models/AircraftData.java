@@ -45,6 +45,7 @@ public class AircraftData
 			}
 		}
 		
+		
 		this.callsign 			= json.getString(1);
 		this.originCountry 		= json.getString(2);
 		this.timestamp			= json.getInt(3);
@@ -56,7 +57,12 @@ public class AircraftData
 		this.trueTrack			= json.getFloat(10);
 		this.verticalRate		= json.getFloat(11);
 		this.geoAltitude		= json.getFloat(13);
-		this.squawk 			= json.getString(14);
+		
+		if (json.get(14) instanceof String)
+			this.squawk 			= json.getString(14);
+		else 
+			this.squawk = "";
+		
 	}
 
 	public String getCallsign() {
