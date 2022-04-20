@@ -152,29 +152,11 @@ public class GetTraffic
 		return null;
 	}
 		
-	
-	
-	
-	
-	
-	
+
 	/*
-	 * So I have come up with an idea. First I need to refactor this code so that people can read it. 
-	 * Right now even a genius would be confused by the garbage below. 
-	 * With regard to the idea, basically the server and client are going to work using HTTP Live Streaming.
-	 * Basically the client will send requests for data in increments and then the server will serve that information.
-	 * The server will send 10 simulateous requests for data and return the data in working order.
-	 * 
-	 */
-	
-	
-	
-	/*
-	 * Testing Async Callbacks to decrease waiting time on requests
-	 * This is garbage code written garbagely but it is a good start to getting async as optimized as possible.
-	 * Over the next few days I won't likely get much done but I will refactor the current code,
-	 * making it look better, more readable, document applicable sections (even in testing and write one pagers about decisions),
-	 * and write about further thoughts.
+	 * Below is ASYNC requests for Area Data. This is the network request implementation.
+	 * The plan is to add a database storage implemenation that works by collecting each timestamps data,
+	 * inserting into a database, and sorting the data needed when requested. 
 	 */
 	
 	public static ArrayList<Aircraft> getElapsedAreaDataAsyncIO(AreaBounds area, int firstTimestamp, int interval, int elapsedTime) {

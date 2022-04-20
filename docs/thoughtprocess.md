@@ -49,3 +49,6 @@ For now, I believe that most effetive method of reducing requests is using 3D li
 
 My dad also suggested making simultaneous requests which might actually work if the library I have offers the ability to perform multiple HTTP requests simultaneously. This will ensure that each request doesn't have to wait for the data to come in and really just be better so I will look into that.
 
+
+I have decided to scratch the whole request thing in real time and just store the data in my own databases. It has many advantages described in decisions.md
+
