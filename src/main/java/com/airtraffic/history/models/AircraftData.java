@@ -3,6 +3,8 @@ package com.airtraffic.history.models;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.mongodb.BasicDBObject;
+
 //Reference https://openskynetwork.github.io/opensky-api/rest.html for API
 
 
@@ -10,14 +12,11 @@ import org.json.JSONObject;
 //This hosts data for each timestamp.
 
 //TODO
-//Consider whether you need to store originCountry
 //Also consider better ways to store callsign, 
 //since it can change within a time period but sending it every update is kinda terrible
-public class AircraftData 
+public abstract class AircraftData 
 {
-	private int timestamp;			//Unix timestamp (seconds) for the last position updated
 	private String callsign; 		//8 char callsign, can be null
-	private String originCountry; 	//Country name inferred from the ICAO 24-bit address
 	private float longitude;		//WGS-84 longitude in decimal degrees
 	private float latitude;			//WGS-84 latitude in decimal degrees
 	private float baroAltitude;		//Barometric altitude in meters
@@ -46,9 +45,7 @@ public class AircraftData
 		}
 		
 		
-		this.callsign 			= json.getString(1);
-		this.originCountry 		= json.getString(2);
-		this.timestamp			= json.getInt(3);
+		this.callsign 			= json.getString(1).trim();
 		this.longitude 			= json.getFloat(5);
 		this.latitude 			= json.getFloat(6);
 		this.baroAltitude 		= json.getFloat(7);
@@ -59,7 +56,7 @@ public class AircraftData
 		this.geoAltitude		= json.getFloat(13);
 		
 		if (json.get(14) instanceof String)
-			this.squawk 			= json.getString(14);
+			this.squawk 			= json.getString(14).trim();
 		else 
 			this.squawk = "";
 		
@@ -72,26 +69,6 @@ public class AircraftData
 
 	public void setCallsign(String callsign) {
 		this.callsign = callsign;
-	}
-
-
-	public String getOriginCountry() {
-		return originCountry;
-	}
-
-
-	public void setOriginCountry(String originCountry) {
-		this.originCountry = originCountry;
-	}
-
-
-	public int getTimestamp() {
-		return timestamp;
-	}
-
-
-	public void setTimestamp(int timestamp) {
-		this.timestamp = timestamp;
 	}
 
 	public float getLongitude() {
@@ -184,16 +161,11 @@ public class AircraftData
 	}
 	
 	@Override
-	public String toString() {
-		return "\t\t" + callsign + " at " + timestamp + "; Speed: " + velocity + "; Altitude:" + baroAltitude; 
-	}
-	
-	//TODO decide if toJson needs to happen or if toJsonArray will work (Based on if REST API can send array back in order)
+	public abstract String toString();
 	
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		
-		json.put("timestamp", this.timestamp);
 		json.put("callsign", this.callsign);
 		json.put("longtitude", this.longitude);
 		json.put("latitude", this.latitude);
@@ -212,7 +184,6 @@ public class AircraftData
 	public JSONArray toJsonArray() {
 		JSONArray json = new JSONArray();
 		
-		json.put(timestamp);
 		json.put(callsign);
 		json.put(longitude);
 		json.put(latitude);

@@ -30,11 +30,22 @@ public class ModelListToJson
 		
 	}
 	
-	public static JSONArray aircraftDataListToJson(ArrayList<AircraftData> aircraftDataList) { 
+	//Dumbass method names
+	public static JSONArray aircraftDataListToJSONArrayArray(ArrayList<AircraftDataClient> aircraftDataList) { 
 		JSONArray aircraftDataJson = new JSONArray();
 		
-		for (AircraftData aircraftData : aircraftDataList) {
+		for (AircraftDataClient aircraftData : aircraftDataList) {
 			aircraftDataJson.put(aircraftData.toJsonArray());
+		}
+		
+		return aircraftDataJson;
+	}
+	
+	public static JSONArray aircraftDataListToJSONObjectArray(ArrayList<AircraftDataClient> aircraftDataList) {
+		JSONArray aircraftDataJson = new JSONArray();
+		
+		for (AircraftDataClient aircraftData : aircraftDataList) {
+			aircraftDataJson.put(aircraftData.toJson());
 		}
 		
 		return aircraftDataJson;

@@ -21,7 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.airtraffic.history.models.Aircraft;
-import com.airtraffic.history.models.AircraftData;
+import com.airtraffic.history.models.AircraftDataClient;
 import com.airtraffic.history.models.AreaBounds;
 
 
@@ -52,10 +52,10 @@ public class GetTraffic
 	//@Param String icao24: ICAO24 hex code for the aircraft
 	//@Param long firstTimestamp: First UNIX time for the request (is limited to < 1 hour behind current UNIX time)
 	//@Param int interval: The interval (in seconds) for each additional request of historical data
-	public static ArrayList<AircraftData> getElapsedAircraftData(String icao24, int firstTimestamp, int interval, int elapsedTime) {
+	public static ArrayList<AircraftDataClient> getElapsedAircraftData(String icao24, int firstTimestamp, int interval, int elapsedTime) {
 		if ((Instant.now().getEpochSecond() - firstTimestamp) > 3600) return null; //If data requested is more than 1 hour old it won't work
 		
-		ArrayList<AircraftData> dataList = new ArrayList<AircraftData>();
+		ArrayList<AircraftDataClient> dataList = new ArrayList<AircraftDataClient>();
 		
 		String baseURL = HOST_URL + "/states/all?icao24=" + icao24;
 		
@@ -67,7 +67,7 @@ public class GetTraffic
 			JSONObject response = new JSONObject(makeRequest(requestURL)); 
 			
 			JSONArray aircraftJson = (JSONArray) response.getJSONArray("states").get(0);
-			dataList.add(new AircraftData(aircraftJson));	
+			dataList.add(new AircraftDataClient(aircraftJson));	
 		}
 		
 		return dataList;
@@ -107,11 +107,11 @@ public class GetTraffic
 					try {
 
 						Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
-						aircraft.addAircraftData(new AircraftData(aircraftJson));
+						aircraft.addAircraftData(new AircraftDataClient(aircraftJson));
 					} catch (RuntimeException e) {
 						//This exception occurs when the aircraft doesn't exist. 
 						//This means we must create an aircraft and add it to the list.
-						aircraftList.add(new Aircraft(icao24, new AircraftData(aircraftJson)));
+						aircraftList.add(new Aircraft(icao24, new AircraftDataClient(aircraftJson)));
 					}	
 				}
 			} catch (JSONException e) {
@@ -217,11 +217,11 @@ public class GetTraffic
 			
 			try {
 				Aircraft aircraft = getAircraftInListFromIcao(aircraftList, icao24);
-				aircraft.addAircraftData(new AircraftData(aircraftJson));
+				aircraft.addAircraftData(new AircraftDataClient(aircraftJson));
 			} catch (RuntimeException e) {
 				//This exception occurs when the aircraft doesn't exist. 
 				//This means we must create an aircraft and add it to the list.
-				aircraftList.add(new Aircraft(icao24, new AircraftData(aircraftJson)));
+				aircraftList.add(new Aircraft(icao24, new AircraftDataClient(aircraftJson)));
 			}	
 		}
 

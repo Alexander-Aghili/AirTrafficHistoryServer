@@ -3,4 +3,10 @@ This is a file dedicated to why I made certain architectural decisions
 I attempted to implement my idea by using sequential API requests but quickly realized that the implementation is not practical due to the latency of each request. Now I tried to implement it using simultaneous requests which have shown already to reduce latency but making more than 10 requests at once causes the OpenSky servers to return a 503 error, essentially saying I'm making too many requests. Therefore, I have come up with two ideas and will write both implemenations to see which is more effective.
 
 This architecture will operate by having a bot request all states from the opensky network every second (or slower depending on several factors such as server response, storage capability, and linear interpolation accuracy). Then I will store this data in a database. The type of database has not been decided yet, but I am considering many such as MongoDB or MySQL. (I will write pros and cons of different databases and why I make the decision I do below) The requests for data will be made by the clients to my server, to which the server will receive data from the database instead of a REST API, which will reduce latency(hopefully). This is also good because the data I have access to is not limited to 1 hour in the past by the opensky api, but instead is limited by my data storage capabilities. It also is much easier to scale since I do not have to make requests for all users through my one account on the server. 
-   
+
+The following will be implemented and documented:
+- Implementation and use of MongoDB for document-based storage
+- Implementation of Threading architecture with clearing and receiving threads. (Of which multiple can exist simultaneously)
+- Builder Design for DatabaseConnector class in order to prevent concurrency issues with database streaming
+- Web server Architecture to communicate with Database
+- Client

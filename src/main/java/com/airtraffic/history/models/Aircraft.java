@@ -9,29 +9,29 @@ import org.json.JSONObject;
 public class Aircraft 
 {
 	private String icao24;
-	private ArrayList<AircraftData> data;
+	private ArrayList<AircraftDataClient> data;
 	
 	public Aircraft(String icao24) {
 		this.icao24 = icao24;
-		data = new ArrayList<AircraftData>();
+		data = new ArrayList<AircraftDataClient>();
 	}
 	
 	//@Param allAircraftJsonData: 
 	//JSONArray of all the json data for one aircraft in specified time interval 
 	public Aircraft(String icao24, ArrayList<JSONArray> allAircraftJsonData) {
 		this.icao24 = icao24;
-		data = new ArrayList<AircraftData>();
+		data = new ArrayList<AircraftDataClient>();
 
 		//Adds each timestamped data to list of all data for this Aircraft
 		for (int i = 0; i < allAircraftJsonData.size(); i++) {
-			data.add(new AircraftData(allAircraftJsonData.get(i)));
+			data.add(new AircraftDataClient(allAircraftJsonData.get(i)));
 		}
 		
 	}
 	
-	public Aircraft(String icao24, AircraftData initAircraftDataPoint) {
+	public Aircraft(String icao24, AircraftDataClient initAircraftDataPoint) {
 		this.icao24 = icao24;
-		data = new ArrayList<AircraftData>();
+		data = new ArrayList<AircraftDataClient>();
 		data.add(initAircraftDataPoint);
 	}
 	
@@ -47,7 +47,7 @@ public class Aircraft
 	 * timestamp from the first timestamp and that will be the # in the arraylist 
 	 * with that timestamp
 	 */
-	public AircraftData getAircraftAtTimestamp(int timestamp) {
+	public AircraftDataClient getAircraftAtTimestamp(int timestamp) {
 		for (int i = 0; i < data.size(); i++) {
 			if (data.get(i).getTimestamp() == timestamp) return data.get(i);
 		}
@@ -56,7 +56,7 @@ public class Aircraft
 		//return (timestamp - data.get(0).getTimestamp())/interval
 	}
 	
-	public void addAircraftData(AircraftData newData) {
+	public void addAircraftData(AircraftDataClient newData) {
 		data.add(newData);
 	}
 	
@@ -79,7 +79,7 @@ public class Aircraft
 	@Override 
 	public String toString() {
 		String consoleString = "\tICAO24: " + icao24 + "\n";
-		for (AircraftData aircraftDataPoint: data) {
+		for (AircraftDataClient aircraftDataPoint: data) {
 			consoleString += aircraftDataPoint.toString() + "\n";
 		}
 		return consoleString + "\n";
@@ -91,7 +91,7 @@ public class Aircraft
 		JSONObject json = new JSONObject();
 		
 		json.put("icao24", icao24);
-		json.put("aircraftData", ModelListToJson.aircraftDataListToJson(data));
+		json.put("aircraftData", ModelListToJson.aircraftDataListToJSONArrayArray(data));
 		
 		return json;
 	}
