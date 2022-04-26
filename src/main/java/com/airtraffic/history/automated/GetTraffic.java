@@ -1,15 +1,15 @@
 package com.airtraffic.history.automated;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.airtraffic.history.database.DocumentKeyValueStore;
 import com.airtraffic.history.models.AircraftDataStorage;
 
 import okhttp3.Credentials;
@@ -23,13 +23,13 @@ public class GetTraffic {
 		private static OkHttpClient client = 
 				new OkHttpClient()
 				.newBuilder()
-				.readTimeout(30, TimeUnit.SECONDS)
+				.readTimeout(30, TimeUnit.SECONDS) //30 second timeout
 				.build();
 		
 	private static final String HOST_URL = "https://opensky-network.org/api";
 	private static final String OPENSKY_API_PASSWORD = System.getenv("OPENSKY_API_PASSWORD");
 	
-	public static ArrayList<Object> getAllStates() {		
+	public static DocumentKeyValueStore getAllStates() {
 		ArrayList<AircraftDataStorage> aircraftDataList = new ArrayList<AircraftDataStorage>();
 		
 		String requestURL = HOST_URL + "/states/all";			
@@ -52,11 +52,7 @@ public class GetTraffic {
 			System.exit(0);
 		}
 		
-		ArrayList<Object> list = new ArrayList<Object>();
-		list.add(response.getLong("time"));
-		list.add(aircraftDataList);
-		return list;
-		
+		return new DocumentKeyValueStore(response.getLong("time"), aircraftDataList);
 	}
 
 	//Makes Authenticated Request and returns body(as string)
