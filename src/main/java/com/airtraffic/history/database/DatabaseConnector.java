@@ -1,6 +1,8 @@
 package com.airtraffic.history.database;
 
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
@@ -9,6 +11,7 @@ import org.bson.Document;
 import com.airtraffic.history.models.AircraftDataStorage;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.result.DeleteResult;
 
 public class DatabaseConnector 
 {		
@@ -25,8 +28,6 @@ public class DatabaseConnector
 		mongoClient = builder.mongoClient;
 	}
 	
-	//Possibly make this private and have a public exposing method with concurrent 
-	//write/read protection
 	public void addData(DocumentKeyValueStore documentData) {
 		Long timestamp = documentData.getKey();
 		ArrayList<AircraftDataStorage> aircraftDataList = documentData.getValue();
@@ -48,11 +49,25 @@ public class DatabaseConnector
 		}
 	}
 	
-	//This also might just be a bad way of doing this
-	public void clearTimestamp(Long timestamp) {
-		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);		
-		BsonDocument doc = new BsonDocument().append("time", new BsonInt64(timestamp));
-		timesCollection.deleteOne(doc);
+	
+	public void checkAndClearOldData(int deleteTime) {
+		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
+		Document deleteParameters = new Document().append("time", new Document().append("$lt", (Instant.now().getEpochSecond() - deleteTime)));
+		synchronized(LOCK) {
+			DeleteResult delete = timesCollection.deleteMany(deleteParameters);	
+			System.out.println("Deleted " + delete.getDeletedCount() + " doucments");
+		}
+	}
+	
+	public Iterator<Document> getDocumentsInTimeFrame(long firstTimestamp, long lastTimestamp) {
+		//If last < first throw timebad exception
+		
+		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
+		Document parameters = new Document().append("time", new Document().append("$lt", lastTimestamp).append("$gt", firstTimestamp));
+		
+		synchronized(LOCK) {
+			return timesCollection.find(parameters).iterator();
+		}
 	}
 	
 	//Builder class for builder architecture

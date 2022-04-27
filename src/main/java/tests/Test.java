@@ -20,10 +20,6 @@ public class Test {
 
 	@SuppressWarnings("unchecked")
 	public static void testDatabase() {
-		long time = System.currentTimeMillis();
-		DatabaseConnector db = DatabaseConnector.Builder.newBuilder().setDefault().build();
-		db.clearTimestamp(1650854691L);
-		System.out.println(System.currentTimeMillis() - time);
 	}
 	
 

@@ -22,14 +22,14 @@ public class RequestAndStore implements Runnable {
 		//either wait and re-request or just disregard data
 		//Right now I am just going to disregard the data
 		if (!previousTimestamps.contains(requestData.getKey())) {
-
-			System.out.println(requestData.getKey());	
 			databaseConnector.addData(requestData);
 			previousTimestamps.add(requestData.getKey());
+			System.out.println(requestData.getKey());
 		}
 		
 		if (previousTimestamps.size() > 50) {
 			previousTimestamps.remove(0);
+			//Might be better to remove the lowest value instead of first index
 		}
 		
 	}
