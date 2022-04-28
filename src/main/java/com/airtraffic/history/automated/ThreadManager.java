@@ -33,12 +33,12 @@ public class ThreadManager
 			
 	    	@Override
 			public void run() {
+	    		//Sometimes get SocketExceptions
 	    		Thread requestingThread = new Thread(requestingRunnable);
 	    		
 	    		//OKAY so threads going up in increments which seems bad so fix that
 	    		//ei Thread-n++
 	    		requestingThread.start();
-	    		System.out.println(requestingThread.getName());
 			}
 	    	
 	    }, 0, 2, TimeUnit.SECONDS);
@@ -52,10 +52,9 @@ public class ThreadManager
 				// TODO Auto-generated method stub
 	    		Thread clearingThread = new Thread(clearingRunnable);
 	    		clearingThread.start();
-	    		System.out.println(clearingThread.getName());
 
 			}
 	    	
-	    }, 3600, 10, TimeUnit.SECONDS); //Initial delay of one hour to wait for 
+	    }, 3600, 10, TimeUnit.SECONDS); //Initial delay of one hour to start clearing
 	}
 }

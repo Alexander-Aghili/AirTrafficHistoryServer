@@ -25,7 +25,7 @@ public class AircraftDataStorage extends AircraftDataClient{
 	public Document toDocument() {
 		return new Document("icao_id", icaoCode)
 				.append("callsign", super.getCallsign())
-				.append("longtitude", super.getLongitude())
+				.append("longitude", super.getLongitude())
 				.append("latitude", super.getLatitude())
 				.append("baroAltitude", super.getBaroAltitude())
 				.append("onGround", super.isOnGround())

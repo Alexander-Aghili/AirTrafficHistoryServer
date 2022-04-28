@@ -1,5 +1,6 @@
 package com.airtraffic.history.models;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -11,6 +12,11 @@ public class AircraftDataClient extends AircraftData {
 	public AircraftDataClient(JSONArray json) {
 		super(json);
 		this.timestamp			= json.getInt(3);
+	}
+	
+	public AircraftDataClient(Document document, int timestamp) {
+		super(document);
+		this.timestamp = timestamp;
 	}
 	
 	public int getTimestamp() {

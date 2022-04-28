@@ -22,17 +22,42 @@ public class AreaBounds {
 		this.lomax = bounds.getDouble("lomax");
 	}
 	
-	public void changeLengthByFactor(double factor) {
-		lamin -= ((lamax-lamin)*factor)/2;
-		lamax += ((lamax-lamin)*factor)/2;
-		lomin -= ((lomax-lomin)*factor)/2;
-		lomax += ((lamax-lamin)*factor)/2;
-	}
-	
 	public double getArea() {
 		return (lamax-lamin)*(lomax-lomin);
 	}
 	
+	public double getLamin() {
+		return lamin;
+	}
+
+	public void setLamin(double lamin) {
+		this.lamin = lamin;
+	}
+
+	public double getLamax() {
+		return lamax;
+	}
+
+	public void setLamax(double lamax) {
+		this.lamax = lamax;
+	}
+
+	public double getLomin() {
+		return lomin;
+	}
+
+	public void setLomin(double lomin) {
+		this.lomin = lomin;
+	}
+
+	public double getLomax() {
+		return lomax;
+	}
+
+	public void setLomax(double lomax) {
+		this.lomax = lomax;
+	}
+
 	public String toURL() {
 		return "lamin=" + this.lamin 
 				+ "&lamax=" + this.lamax 

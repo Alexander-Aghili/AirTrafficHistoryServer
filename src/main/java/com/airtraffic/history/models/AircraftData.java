@@ -1,5 +1,6 @@
 package com.airtraffic.history.models;
 
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -62,6 +63,8 @@ public abstract class AircraftData
 		
 	}
 
+	public AircraftData(Document document) {}
+	
 	public String getCallsign() {
 		return callsign;
 	}

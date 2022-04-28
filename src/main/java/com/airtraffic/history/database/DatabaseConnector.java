@@ -8,7 +8,9 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
 
+import com.airtraffic.history.ThreadLock;
 import com.airtraffic.history.models.AircraftDataStorage;
+import com.airtraffic.history.models.AreaBounds;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
@@ -18,8 +20,7 @@ public class DatabaseConnector
 	//constant
 	private final String ATCH_DB = "airTrafficHistoryDB";
 	private final String TIMES_COLLECTION = "times";
-	private final Object LOCK = new Object();
-	
+	private final Object LOCK = new Object();	
 	//To be established at build time
 	private MongoClient mongoClient;
 	
@@ -63,12 +64,37 @@ public class DatabaseConnector
 		//If last < first throw timebad exception
 		
 		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
-		Document parameters = new Document().append("time", new Document().append("$lt", lastTimestamp).append("$gt", firstTimestamp));
+		Document parameters = new Document()
+				.append("time", new Document()
+						.append("$lt", lastTimestamp)
+						.append("$gt", firstTimestamp));
 		
 		synchronized(LOCK) {
 			return timesCollection.find(parameters).iterator();
 		}
 	}
+	
+	public Iterator<Document> getDocumentsInTimeFrameAndArea(AreaBounds area, long firstTimestamp, long lastTimestamp) {
+		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
+		Document parameters = new Document()
+				.append("time", new Document()
+						.append("$lt", lastTimestamp)
+						.append("$gt", firstTimestamp))
+				.append("states", new Document()
+						.append("longitude", new Document()
+								.append("$lt", area.getLomax())
+								.append("$gt", area.getLomin()))
+						.append("latitude", new Document())
+								.append("$lt", area.getLamax())
+								.append("$gt", area.getLamin())
+				);
+		
+		//Might be unneccesary to lock while reading, might cause more delays
+		synchronized(LOCK) {
+			return timesCollection.find(parameters).iterator();
+		}
+	}
+	
 	
 	//Builder class for builder architecture
 	public static class Builder {
