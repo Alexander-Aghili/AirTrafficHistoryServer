@@ -8,7 +8,8 @@ public class AreaBounds {
 	private double lomin;
 	private double lomax;
 	
-	public AreaBounds(double lamin, double lamax, double lomin, double lomax) {
+	public AreaBounds(double lamin, double lamax, double lomin, double lomax) throws AreaOutOfBoundsException {
+		validateCoordinates(lamin, lamax, lomin, lomax);
 		this.lamin = lamin;
 		this.lamax = lamax;
 		this.lomin = lomin;
@@ -20,6 +21,11 @@ public class AreaBounds {
 		this.lamax = bounds.getDouble("lamax");
 		this.lomin = bounds.getDouble("lomin");
 		this.lomax = bounds.getDouble("lomax");
+	}
+	
+	private void validateCoordinates(double lamin, double lamax, double lomin, double lomax) throws AreaOutOfBoundsException {
+		if (lamin>=lamax) throw new AreaOutOfBoundsException();
+		if (lomin>=lomax) throw new AreaOutOfBoundsException();
 	}
 	
 	public double getArea() {

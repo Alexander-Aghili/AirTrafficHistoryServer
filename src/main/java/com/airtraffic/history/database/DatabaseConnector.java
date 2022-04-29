@@ -8,7 +8,6 @@ import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
 
-import com.airtraffic.history.ThreadLock;
 import com.airtraffic.history.models.AircraftDataStorage;
 import com.airtraffic.history.models.AreaBounds;
 import com.mongodb.MongoClient;

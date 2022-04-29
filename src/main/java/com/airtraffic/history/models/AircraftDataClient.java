@@ -6,20 +6,20 @@ import org.json.JSONObject;
 
 public class AircraftDataClient extends AircraftData {
 	
-	private int timestamp;			//Unix timestamp (seconds) for the last position updated
+	private long timestamp;			//Unix timestamp (seconds) for the last position updated
 	
 	
 	public AircraftDataClient(JSONArray json) {
 		super(json);
-		this.timestamp			= json.getInt(3);
+		this.timestamp			= json.getLong(3);
 	}
 	
-	public AircraftDataClient(Document document, int timestamp) {
+	public AircraftDataClient(Document document, long timestamp) {
 		super(document);
 		this.timestamp = timestamp;
 	}
 	
-	public int getTimestamp() {
+	public long getTimestamp() {
 		return timestamp;
 	}
 
@@ -44,7 +44,7 @@ public class AircraftDataClient extends AircraftData {
 
 	@Override
 	public String toString() {
-		return "AircraftData";
+		return timestamp + ": (" + super.getLatitude() + ", " + super.getLongitude() + ")";
 	}
 
 }

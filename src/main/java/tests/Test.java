@@ -22,7 +22,10 @@ public class Test {
 	@SuppressWarnings("unchecked")
 	public static void testDatabase() {
 		DatabaseToModel model = new DatabaseToModel();
-		model.getElapsedAreaTraffic(area, 1651159834L, 1651159891L);
+		ArrayList<Aircraft> aircraftList = model.getElapsedAreaTraffic(area, 1651206661L, 1651206717L);
+		for (Aircraft aircraft : aircraftList) {
+			System.out.println(aircraft);
+		}
 	}
 	
 

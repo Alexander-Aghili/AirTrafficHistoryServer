@@ -78,7 +78,7 @@ public class Aircraft
 	//Look into iterators and not having a for loop here
 	@Override 
 	public String toString() {
-		String consoleString = "\tICAO24: " + icao24 + "\n";
+		String consoleString = "ICAO24: " + icao24 + "\n" + data.get(0).getCallsign() + "\n";
 		for (AircraftDataClient aircraftDataPoint: data) {
 			consoleString += aircraftDataPoint.toString() + "\n";
 		}

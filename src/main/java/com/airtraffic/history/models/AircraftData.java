@@ -18,14 +18,14 @@ import com.mongodb.BasicDBObject;
 public abstract class AircraftData 
 {
 	private String callsign; 		//8 char callsign, can be null
-	private float longitude;		//WGS-84 longitude in decimal degrees
-	private float latitude;			//WGS-84 latitude in decimal degrees
-	private float baroAltitude;		//Barometric altitude in meters
+	private double longitude;		//WGS-84 longitude in decimal degrees
+	private double latitude;			//WGS-84 latitude in decimal degrees
+	private double baroAltitude;		//Barometric altitude in meters
 	private boolean onGround;		//Boolean value which indicates if the position was retrieved from a surface position report
-	private float velocity;			//Velocity over ground in m/s
-	private float trueTrack; 		//True track in decimal degrees clockwise from north
-	private float verticalRate; 	//Vertical rate in m/s. + = climbing. - = decending
-	private float geoAltitude;		//Geometric altitude in meters
+	private double velocity;			//Velocity over ground in m/s
+	private double trueTrack; 		//True track in decimal degrees clockwise from north
+	private double verticalRate; 	//Vertical rate in m/s. + = climbing. - = decending
+	private double geoAltitude;		//Geometric altitude in meters
 	private String squawk;			//Squawk code
 	
 	
@@ -47,14 +47,14 @@ public abstract class AircraftData
 		
 		
 		this.callsign 			= json.getString(1).trim();
-		this.longitude 			= json.getFloat(5);
-		this.latitude 			= json.getFloat(6);
-		this.baroAltitude 		= json.getFloat(7);
+		this.longitude 			= json.getDouble(5);
+		this.latitude 			= json.getDouble(6);
+		this.baroAltitude 		= json.getDouble(7);
 		this.onGround 			= json.getBoolean(8);
-		this.velocity 			= json.getFloat(9);
-		this.trueTrack			= json.getFloat(10);
-		this.verticalRate		= json.getFloat(11);
-		this.geoAltitude		= json.getFloat(13);
+		this.velocity 			= json.getDouble(9);
+		this.trueTrack			= json.getDouble(10);
+		this.verticalRate		= json.getDouble(11);
+		this.geoAltitude		= json.getDouble(13);
 		
 		if (json.get(14) instanceof String)
 			this.squawk 			= json.getString(14).trim();
@@ -63,7 +63,19 @@ public abstract class AircraftData
 		
 	}
 
-	public AircraftData(Document document) {}
+	//TODO: Finish this and the AircraftDataClient aspect
+	public AircraftData(Document document) {
+		this.callsign 				= document.getString("callsign");
+		this.longitude				= document.getDouble("longitude");
+		this.latitude				= document.getDouble("latitude");
+		this.baroAltitude 			= document.getDouble("baroAltitude");
+		this.onGround				= document.getBoolean("onGround");
+		this.velocity 				= document.getDouble("velocity");
+		this.trueTrack 				= document.getDouble("trueTrack");
+		this.verticalRate 			= document.getDouble("verticalRate");
+		this.geoAltitude 			= document.getDouble("geoAltitude");
+		this.squawk 				= document.getString("squawk");
+	}
 	
 	public String getCallsign() {
 		return callsign;
@@ -74,32 +86,32 @@ public abstract class AircraftData
 		this.callsign = callsign;
 	}
 
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
 
-	public void setLongitude(float longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
 
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
 
-	public void setLatitude(float latitiude) {
+	public void setLatitude(double latitiude) {
 		this.latitude = latitiude;
 	}
 
 
-	public float getBaroAltitude() {
+	public double getBaroAltitude() {
 		return baroAltitude;
 	}
 
 
-	public void setBaroAltitude(float baroAltitude) {
+	public void setBaroAltitude(double baroAltitude) {
 		this.baroAltitude = baroAltitude;
 	}
 
@@ -114,42 +126,42 @@ public abstract class AircraftData
 	}
 
 
-	public float getVelocity() {
+	public double getVelocity() {
 		return velocity;
 	}
 
 
-	public void setVelocity(float velocity) {
+	public void setVelocity(double velocity) {
 		this.velocity = velocity;
 	}
 
 
-	public float getTrueTrack() {
+	public double getTrueTrack() {
 		return trueTrack;
 	}
 
 
-	public void setTrueTrack(float trueTrack) {
+	public void setTrueTrack(double trueTrack) {
 		this.trueTrack = trueTrack;
 	}
 
 
-	public float getVerticalRate() {
+	public double getVerticalRate() {
 		return verticalRate;
 	}
 
 
-	public void setVerticalRate(float verticalRate) {
+	public void setVerticalRate(double verticalRate) {
 		this.verticalRate = verticalRate;
 	}
 
 
-	public float getGeoAltitude() {
+	public double getGeoAltitude() {
 		return geoAltitude;
 	}
 
 
-	public void setGeoAltitude(float geoAltitude) {
+	public void setGeoAltitude(double geoAltitude) {
 		this.geoAltitude = geoAltitude;
 	}
 
@@ -186,7 +198,7 @@ public abstract class AircraftData
 	
 	public JSONArray toJsonArray() {
 		JSONArray json = new JSONArray();
-		
+		json.put(0);
 		json.put(callsign);
 		json.put(longitude);
 		json.put(latitude);

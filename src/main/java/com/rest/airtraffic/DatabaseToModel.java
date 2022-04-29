@@ -7,6 +7,7 @@ import org.bson.Document;
 
 import com.airtraffic.history.database.DatabaseConnector;
 import com.airtraffic.history.models.Aircraft;
+import com.airtraffic.history.models.AircraftDataClient;
 import com.airtraffic.history.models.AreaBounds;
 
 public class DatabaseToModel {
@@ -26,22 +27,27 @@ public class DatabaseToModel {
 		
 		while (timeDocuments.hasNext()) {
 			Document currentTimeDocument = timeDocuments.next();
+			
+			@SuppressWarnings("unchecked")
 			ArrayList<Document> statesDocuments = (ArrayList<Document>) currentTimeDocument.get("states");
 			
-			Long timestamp = (Long) currentTimeDocument.get("timestamp");
-			System.out.println(statesDocuments.size());
+			Long timestamp = currentTimeDocument.getLong("time");
 			
 			for (Document currentStateDocument : statesDocuments) {
 				if (currentStateDocument.getDouble("latitude") > area.getLamin() 
 						&& currentStateDocument.getDouble("latitude") < area.getLamax()
 						&& currentStateDocument.getDouble("longitude") > area.getLomin()
 						&& currentStateDocument.getDouble("longitude") < area.getLomax()) {
-					
+					try {
+						getAircraftInListFromIcao(aircraftList, currentStateDocument.getString("icao_id")).addAircraftData(new AircraftDataClient(currentStateDocument, timestamp));
+					} catch (IndexOutOfBoundsException e) {
+						aircraftList.add(new Aircraft(currentStateDocument.getString("icao_id"), new AircraftDataClient(currentStateDocument, timestamp)));
+					}
 				}
 			}
 		}
 		
-		return null;
+		return aircraftList;
 	}
 	
 	//Returns Aircraft (same location in memory of Aircraft in List) that has same icao24 code of input 

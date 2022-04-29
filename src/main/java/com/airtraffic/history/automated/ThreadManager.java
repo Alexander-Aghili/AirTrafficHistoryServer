@@ -18,7 +18,7 @@ public class ThreadManager
 	
 	public static void main(String[] args) {
 	    
-		//databaseConnector.checkAndClearOldData(0);
+		databaseConnector.checkAndClearOldData(0);
 		runScheduledServices();
 	}
 	
