@@ -2,6 +2,7 @@ package com.airtraffic.history.models;
 
 import org.json.JSONObject;
 
+//A Rectangular box with minimum latitude and longitude and maximum latitude and longitude
 public class AreaBounds {
 	private double lamin;
 	private double lamax;

@@ -19,7 +19,7 @@ import okhttp3.Response;
 public class GetTraffic {
 		
 	//TODO Configure HTTP Client
-		private static OkHttpClient client = 
+	private static OkHttpClient client = 
 				new OkHttpClient()
 				.newBuilder()
 				.readTimeout(30, TimeUnit.SECONDS) //30 second timeout
