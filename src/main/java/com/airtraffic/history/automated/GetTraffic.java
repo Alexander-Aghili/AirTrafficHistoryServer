@@ -17,14 +17,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class GetTraffic {
-		
-	//TODO Configure HTTP Client
+	
 	private static OkHttpClient client = 
 				new OkHttpClient()
 				.newBuilder()
 				.readTimeout(30, TimeUnit.SECONDS) //30 second timeout
 				.build();
 		
+	
 	private static final String HOST_URL = "https://opensky-network.org/api";
 	private static final String OPENSKY_API_PASSWORD = System.getenv("OPENSKY_API_PASSWORD");
 	
@@ -51,24 +51,29 @@ public class GetTraffic {
 			System.exit(0);
 		}
 		
+		
 		return new DocumentKeyValueStore(response.getLong("time"), aircraftDataList);
 	}
 
 	//Makes Authenticated Request and returns body(as string)
 	private static String makeRequest(String url) {
+		//Makes authenticated request
 		String credential = Credentials.basic("Alexsky2", OPENSKY_API_PASSWORD);
 		
+		//Building OKHTTP request
 		Request request = new Request.Builder()
 			  .header("Authorization", credential)
 		      .url(url)
 		      .build();
 
+		
 		try (Response response = client.newCall(request).execute()) {
 			return response.body().string();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
+		//Return nothing if execution of request fails 
 		return null;
 	}
 

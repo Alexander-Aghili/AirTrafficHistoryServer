@@ -5,7 +5,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 //Aircraft class
-//For Future: Maybe get Aircraft Type via a database or API if possible
 public class Aircraft 
 {
 	private String icao24;
@@ -86,7 +85,6 @@ public class Aircraft
 		
 	}
 	
-	//TODO better naming for the shit in this method
 	public JSONObject toJson() {
 		JSONObject json = new JSONObject();
 		

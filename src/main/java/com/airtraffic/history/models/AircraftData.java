@@ -198,7 +198,8 @@ public abstract class AircraftData
 	
 	public JSONArray toJsonArray() {
 		JSONArray json = new JSONArray();
-		json.put(0);
+		
+		json.put(0);	//0 put for timestamp in AircraftDataClient to replace
 		json.put(callsign);
 		json.put(longitude);
 		json.put(latitude);
