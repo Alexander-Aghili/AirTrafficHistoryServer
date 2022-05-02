@@ -7,6 +7,13 @@ import java.util.concurrent.TimeUnit;
 import com.airtraffic.history.database.DatabaseConnector;
 
 
+/**
+ * ThreadManager that manages Bot threads, performing retrieving and clearing of data.
+ * 
+ * @author Alexander Aghili
+ *
+ */
+
 //ThreadManager class, manages Bot threads, which perform retrieving and clearing of data
 public class ThreadManager 
 {
@@ -31,7 +38,10 @@ public class ThreadManager
 		runScheduledServices();
 	}
 	
-	//Method to schedule the seperate Threads for data collection and removal
+	/**
+	 * Schedules the seperate Threads for data collection and removal.
+	 * 
+	 */
 	public static void runScheduledServices() {
 		//Creating executor for threads
 		//Possibly look into different executors that might serve this purpose better

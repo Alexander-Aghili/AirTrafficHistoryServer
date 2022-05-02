@@ -14,10 +14,12 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.DeleteResult;
 
-//DatabaseConnector class
-//Defines all methods to communicate with MongoDB database
-//Must be built using Builder architecture for reasons listed above Builder architecture 
-//as well as in future documentation
+/**
+ * Defines all methods to communicate with MongoDB database
+ *  
+ * @author Alexander Aghili 
+ *
+ */
 public class DatabaseConnector 
 {		
 	//Constants
@@ -38,11 +40,12 @@ public class DatabaseConnector
 		timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
 	}
 	
-	/*
-	 * Adds all the data from a single OpenSky API Request into database
-	 * Formatted in DocumentKeyValueStore, detailed below
+	/**
+	 * Adds all the data from a single OpenSky API Request into database,
+	 * formatted in DocumentKeyValueStore, detailed below.
 	 * 
-	 * @Param documentData: Key=Timestamp, Value=ArrayList<AircraftDataStorage>
+	 * @param 		documentData Timestamp and ArrayList of AircraftDataStorage
+	 * @see 		DocumentKeyValueStore
 	 * 
 	 */
 	public void addData(DocumentKeyValueStore documentData) {
@@ -71,14 +74,17 @@ public class DatabaseConnector
 	}
 	
 	
-	/*
-	 * @Param deleteTime: Maximum number of seconds old that a document can be to not be deleted
-	 * 
+	/**
 	 * A document with a timestamp that is older than deleteTime seconds in the past will be deleted.
-	 * This clears all documents that are older.
 	 * 
+	 * @param deleteTime Maximum number of seconds old that a document can be to not be deleted
+	 * 
+	 * 
+	 */
+	
+	/* 
 	 * @Special
-	 * 0 will delete all documents in the database
+	 * 0 will delete all current documents in the database
 	 *  
 	 * @Future
 	 * Ensure deleteTime is not negative (Though it shouldn't be)
@@ -97,12 +103,13 @@ public class DatabaseConnector
 	}
 	
 	
-	//
-	//Gets all possible documents between first and last timestamp and returns them (As an Iterator)
-	//@Returns Iterator<Document> 
-	//@Param firstTimestamp: Long value in Unix Epoch time. First time boundary.
-	//@Param lastTimestamp: Long value in Unix Epoch time. Last time boundary.
-	//
+	/**
+	 * Gets all possible documents between first and last timestamp and returns them (As an Iterator).
+	 * 
+	 * @return 		An Iterator of Documents that are within the timestamps defined
+	 * @param 		firstTimestamp Long value in Unix Epoch time. First time boundary.
+	 * @param 		lastTimestamp Long value in Unix Epoch time. Last time boundary.
+	 */
 	public Iterator<Document> getDocumentsInTimeFrame(long firstTimestamp, long lastTimestamp) {
 		//If last < first throw timebad exception
 		
@@ -126,7 +133,7 @@ public class DatabaseConnector
 	 * (O(n^2) time, since it is for all documents)
 	 * 
 	 */
-	public Iterator<Document> getDocumentsInTimeFrameAndArea(AreaBounds area, long firstTimestamp, long lastTimestamp) {
+	private Iterator<Document> getDocumentsInTimeFrameAndArea(AreaBounds area, long firstTimestamp, long lastTimestamp) {
 		MongoCollection<Document> timesCollection = mongoClient.getDatabase(ATCH_DB).getCollection(TIMES_COLLECTION);
 		Document parameters = new Document()
 				.append("time", new Document()

@@ -14,8 +14,9 @@ Those are marked with @Future above the Method header or class declaration.
 
 ## To Do
 Basic TODO list:
- - Finish documentation and comments for each method and class
+ - Finish JavaDoc and comments for each method and class
  - Write unit tests
+ - Fix final issues
  - Start client side
 
 ## REST API
@@ -24,7 +25,7 @@ A bit dated, I know, but it is all I know right now and I wanted to build this p
 In the future, a NodeJS or another framework/language can be used to build the API.
 
 ## How to Contribute
-If you like to contribute, you can contact me directly using my contact info below or simply make a pull request
+If you like to contribute, you can contact me directly using my contact info below or simply make a pull request.
 Also read contributing.md if it is written
 
 ## Credit
