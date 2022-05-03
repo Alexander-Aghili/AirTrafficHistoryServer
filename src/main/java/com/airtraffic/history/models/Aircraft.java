@@ -4,7 +4,14 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-//Aircraft class
+
+/**
+ * 
+ * 
+ * 
+ * @author Alexander Aghili
+ *
+ */
 public class Aircraft 
 {
 	private String icao24;

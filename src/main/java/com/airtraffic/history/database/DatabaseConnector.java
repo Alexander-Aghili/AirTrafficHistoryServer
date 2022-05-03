@@ -154,6 +154,9 @@ public class DatabaseConnector
 		}
 	}
 	
+	public void close() {
+		mongoClient.close();
+	}
 	
 	/*
 	 * Builder architecture is used for future when MongoDB might be more complex

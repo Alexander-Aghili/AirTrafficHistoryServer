@@ -46,7 +46,7 @@ public class RequestAndStore implements Runnable {
 			//Might want to lock this between threads for saftey.
 			previousTimestamps.add(requestData.getKey());
 			
-			System.out.println(requestData.getKey());
+			//System.out.println(requestData.getKey());
 		}
 		
 		//Requests have a maxmimum keep alive time of 30 seconds

@@ -10,6 +10,7 @@ import com.airtraffic.history.models.Aircraft;
 import com.airtraffic.history.models.AircraftDataClient;
 import com.airtraffic.history.models.AreaBounds;
 
+//Never forget to close databaseConnector prior to returning data or else memory leak
 public class DatabaseToModel {
 	
 	//Database Connector
@@ -52,6 +53,10 @@ public class DatabaseToModel {
 				}
 			}
 		}
+		
+		//Must close database prior to returning data from REST API 
+		//or else there is a memory leak as the database stays connected and keeps this thread alive.
+		databaseConnector.close(); 
 		
 		return aircraftList;
 	}
