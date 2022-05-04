@@ -35,6 +35,7 @@ public class ThreadManager
 	//Could be altered to have a seperate driver but that would immediatly call 
 	//runScheduledServices() method anyway
 	public static void main(String[] args) {
+		//databaseConnector.checkAndClearOldData(0);
 		runScheduledServices();
 	}
 	
@@ -82,6 +83,7 @@ public class ThreadManager
 	    		//Sometimes get SocketExceptions
 	    		Thread requestingThread = new Thread(requestingRunnable);
 	    		requestingThread.start();
+	    		
 			}
 	    	
 	    }, 0, 2, TimeUnit.SECONDS);

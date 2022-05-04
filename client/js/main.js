@@ -19,30 +19,15 @@ function getUrl(url) {
             //console.log(response.data);
         })
         .catch(function (error) {
-            console.log(error.status);
+            console.log(error);
         })
         .then(function () {
             console.log(performance.now() - baseTime);
         });
 }
-const numLength = (lastTimestamp - firstTimestamp);
 
-function doLoop() {
-    for (var i = 10; i < numLength; i+=10) {
-        url = baseurl + firstTimestamp + '/' + (firstTimestamp + 10);
-        getUrl(url);
-        firstTimestamp = firstTimestamp + 10;
-    }
-    
-}
 
 function oneRequest() {
     let url = baseurl + firstTimestamp + '/' + 0;
     getUrl(url);
-}
-
-for (var k = 0; k < 10; k++) {
-
-    doLoop();
-    //oneRequest();
 }
