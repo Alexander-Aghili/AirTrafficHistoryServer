@@ -30,7 +30,7 @@ function makeRequest(area, firstTimestamp, secondTimestamp) {
 }
 
 const areaBounds = new AreaBounds(37.0,38.5,-123.0,-121.5);
-const firstTimestamp = 1651612648;
+const firstTimestamp = Math.round((new Date()).getTime() / 1000) - 1800;
 const lastTimestamp = 0;
 
 makeRequest(areaBounds, firstTimestamp, lastTimestamp);

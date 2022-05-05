@@ -28,31 +28,30 @@ public class GetTraffic {
 	private static final String HOST_URL = "https://opensky-network.org/api";
 	private static final String OPENSKY_API_PASSWORD = System.getenv("OPENSKY_API_PASSWORD");
 	
-	public static DocumentKeyValueStore getAllStates() {
+	public static DocumentKeyValueStore getAllStates() throws NullPointerException {
 		ArrayList<AircraftDataStorage> aircraftDataList = new ArrayList<AircraftDataStorage>();
 		
 		String requestURL = HOST_URL + "/states/all";			
-		
-		//Possible error if response body isn't JSON, not caught right now
-		//TODO Catch error
+
 		JSONObject response = new JSONObject(makeRequest(requestURL));
-		
 		//TODO Catch error if no states returned
 		//This terrible try catch hopefully is temporary
 		try {
+			
 			JSONArray listOfStates = (JSONArray) response.getJSONArray("states");
 			
 			for (int j = 0; j < listOfStates.length(); j++) {
 				JSONArray aircraftJson = listOfStates.getJSONArray(j);
 				aircraftDataList.add(new AircraftDataStorage(aircraftJson));
 			}
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-		
-		
+
 		return new DocumentKeyValueStore(response.getLong("time"), aircraftDataList);
+		
 	}
 
 	//Makes Authenticated Request and returns body(as string)

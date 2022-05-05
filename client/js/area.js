@@ -1,7 +1,5 @@
-
-
 //AreaBounds constructor
-function AreaBounds(lomin, lomax, lamin, lamax) {
+export function AreaBounds(lomin, lomax, lamin, lamax) {
     this.lomin = lomin;
     this.lomax = lomax;
     this.lamin = lamin;
@@ -18,6 +16,8 @@ function AreaBounds(lomin, lomax, lamin, lamax) {
     this.setLamin = setLamin;
     this.setLamax = setLamax;
 
+    this.toUrl = toUrl();
+
 }
 
 function getLomin() { return this.lomin; }
@@ -30,6 +30,6 @@ function setLomax(lomax) { this.lomax = lomax; }
 function setLamin(lamin) { this.lamin = lamin; }
 function setLamax(lamax) { this.lamax = lamax; }
 
-function toUrl() {
+export function toUrl() {
     return lomin + "/" + lomax + "/" + lamin + "/" + lamax + "/";
 }
