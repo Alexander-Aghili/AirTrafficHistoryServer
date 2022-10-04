@@ -58,9 +58,9 @@ public class AirTrafficHistoryService
 		) {
 		
 		
-		if (firstTimestamp < Instant.now().getEpochSecond()-3600) 
+		/*if (firstTimestamp < Instant.now().getEpochSecond()-3600) 
 			return Response.status(400).entity("More than 1 Hour Old Request").build();
-
+		 */
 		DatabaseToModel model = new DatabaseToModel();
 		AreaBounds areaBounds;
 		

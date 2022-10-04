@@ -39,10 +39,7 @@ public class DatabaseToModel {
 			
 			for (Document currentStateDocument : statesDocuments) {
 				//If getDocumentsInTimeFrameAndArea works, this if statement is unnecessary
-				if (currentStateDocument.getDouble("latitude") > area.getLamin() 
-						&& currentStateDocument.getDouble("latitude") < area.getLamax()
-						&& currentStateDocument.getDouble("longitude") > area.getLomin()
-						&& currentStateDocument.getDouble("longitude") < area.getLomax()) {
+				if (currentStateDocumentInArea(currentStateDocument, area)) {
 					
 					try {		
 						getAircraftInListFromIcao(aircraftList, currentStateDocument.getString("icao_id")).addAircraftData(new AircraftDataClient(currentStateDocument, timestamp));
@@ -59,6 +56,15 @@ public class DatabaseToModel {
 		databaseConnector.close(); 
 		
 		return aircraftList;
+	}
+	
+	private boolean currentStateDocumentInArea(Document currentStateDocument, AreaBounds area) {
+		if (currentStateDocument.getDouble("latitude") > area.getLamin() 
+						&& currentStateDocument.getDouble("latitude") < area.getLamax()
+						&& currentStateDocument.getDouble("longitude") > area.getLomin()
+						&& currentStateDocument.getDouble("longitude") < area.getLomax()) {
+			return true;
+		} else return false;
 	}
 	
 	//Returns Aircraft (same location in memory of Aircraft in List) that has same icao24 code of input

@@ -1,6 +1,7 @@
 package com.airtraffic.history.automated;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -27,13 +28,16 @@ public class GetTraffic {
 	
 	private static final String HOST_URL = "https://opensky-network.org/api";
 	private static final String OPENSKY_API_PASSWORD = System.getenv("OPENSKY_API_PASSWORD");
+	private static final int DELAY = 5; 
 	
 	public static DocumentKeyValueStore getAllStates() throws NullPointerException {
 		ArrayList<AircraftDataStorage> aircraftDataList = new ArrayList<AircraftDataStorage>();
 		
-		String requestURL = HOST_URL + "/states/all";			
-
-		JSONObject response = new JSONObject(makeRequest(requestURL));
+		String requestURL = HOST_URL + "/states/all?time=" + (Instant.now().getEpochSecond()-DELAY);			
+		
+		String s=makeRequest(requestURL);
+		//System.out.println(s);
+		JSONObject response = new JSONObject(s);
 		//TODO Catch error if no states returned
 		//This terrible try catch hopefully is temporary
 		try {

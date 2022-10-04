@@ -30,11 +30,14 @@ public class ThreadManager
 														.setDefault()
 														.build();
 	
+	private static final int UPDATE_RATE = 5;
+	
 	
 	//ThreadManager is also the Driver for access to start the processes
 	//Could be altered to have a seperate driver but that would immediatly call 
 	//runScheduledServices() method anyway
 	public static void main(String[] args) {
+		//databaseConnector.checkAndClearOldData(0);
 		runScheduledServices();
 	}
 	
@@ -81,11 +84,11 @@ public class ThreadManager
 			public void run() {
 	    		//Sometimes get SocketExceptions
 	    		Thread requestingThread = new Thread(requestingRunnable);
+	    		//I have a feeling I need to destroy these threads
 	    		requestingThread.start();
-	    		
 			}
 	    	
-	    }, 0, 2, TimeUnit.SECONDS);
+	    }, 0, UPDATE_RATE, TimeUnit.SECONDS);
 	    
 	    
 	    //Check documents to delete every 10 seconds
